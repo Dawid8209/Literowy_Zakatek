@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { supabase } from './supabaseClient';
 
 // LiterowyZakatek.jsx
 // Single-file React component (default export) styled with Tailwind CSS.
@@ -14,12 +15,36 @@ import React, { useEffect, useState } from "react";
 export default function LiterowyZakatek() {
   const letters = "ABCDEFGHIJ".split("");
   const [dark, setDark] = useState(false);
+  const [booksData, setBooksData] = useState([]);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", dark);
+  }, [dark]);
 
   useEffect(() => {
     const root = document.documentElement;
     if (dark) root.classList.add("dark");
     else root.classList.remove("dark");
   }, [dark]);
+
+  function Stars({ value }) {
+    const full = Math.floor(value);
+    const total = 5;
+    return (
+      <div className="flex items-center space-x-1 text-sm">
+        {Array.from({ length: total }).map((_, i) => (
+          <svg
+            key={i}
+            className={`w-4 h-4 ${i < full ? "text-amber-400" : "text-gray-300 dark:text-gray-600"}`}
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.974a1 1 0 00.95.69h4.178c.969 0 1.371 1.24.588 1.81l-3.39 2.462a1 1 0 00-.364 1.118l1.286 3.974c.3.921-.755 1.688-1.539 1.118l-3.39-2.462a1 1 0 00-1.176 0l-3.39 2.462c-.784.57-1.838-.197-1.539-1.118l1.286-3.974a1 1 0 00-.364-1.118L2.048 9.401c-.783-.57-.38-1.81.588-1.81h4.178a1 1 0 00.95-.69L9.05 2.927z" />
+          </svg>
+        ))}
+      </div>
+    );
+  }
 
   const books = [
     { id: 1, title: "Cienie poranka", author: "M. Kowal", rating: 4.6, cover: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&q=80" },
@@ -109,7 +134,7 @@ export default function LiterowyZakatek() {
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {books.map(book => (
+            {booksData.map(book => (
               <div
                 key={book.id}
                 className="bg-bez dark:bg-czekoladowy rounded-2xl shadow-md overflow-hidden hover:scale-[1.02] transition-transform duration-300"
